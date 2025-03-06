@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ok</groupId>
-	<artifactId>delivery_batch_job</artifactId>
-	<version>0.0.1</version>
-	<name>delivery_batch_job</name>
-	<description>This is a simple batch application</description>
+	<artifactId>tasklet-sample</artifactId>
+	<version>1.0</version>
+	<name>tasklet_sample</name>
+	<description>This is a simple taskle batch application</description>
 
 	<properties>
 		<java.version>11</java.version>

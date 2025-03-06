@@ -16,7 +16,7 @@
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<modules>
-		<module>delivery_job</module>
+		<module>tasklet_sample</module>
 	</modules>
 
 	<properties>

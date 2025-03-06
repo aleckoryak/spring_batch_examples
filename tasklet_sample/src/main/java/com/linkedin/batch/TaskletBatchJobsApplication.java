@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 @SpringBootApplication
 @EnableBatchProcessing
@@ -59,12 +60,23 @@ public class TaskletBatchJobsApplication {
 				return RepeatStatus.FINISHED; 
 			}
 		}).build();
-
 	}
 
 	@Bean
-	public Flow billingFlow() {
-		return new FlowBuilder<SimpleFlow>("billingFlow").start(sendInvoiceStep()).build();
+	public Step sendLoyaltyCartStep() {
+		return this.stepBuilderFactory.get("loyaltyCart").tasklet(new Tasklet() {
+
+			@Override
+			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+				System.out.println("Loyalty is sent to the customer");
+				return RepeatStatus.FINISHED;
+			}
+		}).build();
+	}
+
+	@Bean
+	public Flow loyaltyFlow() {
+		return new FlowBuilder<SimpleFlow>("loyaltyFlow").start(sendLoyaltyCartStep()).build();
 	}
 	
 	@Bean
@@ -82,7 +94,9 @@ public class TaskletBatchJobsApplication {
 							.next(receiptDecider()).on("CORRECT").to(thankCustomerStep())
 							.from(receiptDecider()).on("INCORRECT").to(refundStep())
 					.from(decider())
-						.on("NOT_PRESENT").to(leaveAtDoorStep()).build();
+						.on("NOT_PRESENT").to(leaveAtDoorStep())
+				.next(nestedBillingJobStep())
+				.build();
 
 	}
 
@@ -234,8 +248,8 @@ public class TaskletBatchJobsApplication {
 	public Job deliverPackageJob() {
 		return this.jobBuilderFactory.get("deliverPackageJob")
 				.start(packageItemStep())
-				.on("*").to(deliveryFlow())
-				.next(nestedBillingJobStep())
+				.split(new SimpleAsyncTaskExecutor())
+				.add(deliveryFlow(), loyaltyFlow())
 				.end()
 				.build();
 	}

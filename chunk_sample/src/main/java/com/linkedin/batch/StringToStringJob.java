@@ -25,7 +25,7 @@ public class StringToStringJob {
     Iterator<String> iterator = list.iterator();
 
     @Bean
-    public ItemReader<String> itemReader() {
+    public ItemReader<String> itemStringReader() {
         return new ItemReader<String>() {
             @Override
             public String read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
@@ -38,7 +38,7 @@ public class StringToStringJob {
     public Step chunkStringToStringStep() {
         return this.stepBuilderFactory.get("chunkStringToStringStep")
                 .<String, String>chunk(3)
-                .reader(itemReader())
+                .reader(itemStringReader())
                 .writer(new ItemWriter<String>() {
                     @Override
                     public void write(List<? extends String> list) throws Exception {

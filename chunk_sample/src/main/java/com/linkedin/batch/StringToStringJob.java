@@ -52,7 +52,7 @@ public class StringToStringJob {
 
     @Bean
     public Job jobStringToString() {
-        return this.jobBuilderFactory.get("job")
+        return this.jobBuilderFactory.get("jobStringToString")
                 .start(chunkStringToStringStep())
                 .build();
     }

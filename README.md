@@ -27,6 +27,7 @@ The following guides illustrate how to use some features concretely:
 + Tasklet
 + Chunk
 
+## Tasklet
 ### Flow
 + sequential 
 ```java
@@ -85,7 +86,13 @@ public Job deliverPackageJob() {
 
 
 
-### chanks
+## Chunks
++ Step
+    + ItemReader - one item at a time, chunk by chunk (OOTB: Kafka; FlatFile; HibernateCursor (one thread);  HibernatePaging(multi thread);  JdbcCursor; JdbcPaging; JpaPaging; Mongo; StaxEvent; Json
+    + ItemProcessor - (optional) one item by one in chunk, chunk by chunk
+    + ItemWriter - chunk by chunk
+
+
 04-03
 04_05   chunks from file
 04_05 - chunks from DB (single thread) jdbcCursorItemReader with .sql

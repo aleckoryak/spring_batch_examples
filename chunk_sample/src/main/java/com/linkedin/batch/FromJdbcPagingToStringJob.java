@@ -76,8 +76,8 @@ public class FromJdbcPagingToStringJob {
     }
 
     @Bean
-    public Job fromJdbcPagingToStringJob() throws Exception {
-        return this.jobBuilderFactory.get("fromJdbcPagingToStringJob").start(fromJdbcPagingToStringStep()).build();
+    public Job jobFromJdbcPagingToString() throws Exception {
+        return this.jobBuilderFactory.get("jobFromJdbcPagingToString").start(fromJdbcPagingToStringStep()).build();
     }
 
 }

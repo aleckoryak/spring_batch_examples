@@ -10,6 +10,8 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.support.CompositeItemProcessor;
+import org.springframework.batch.item.support.builder.CompositeItemProcessorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -43,16 +45,17 @@ public class FromJdbcCursorTransformToFileJob {
         return this.stepBuilderFactory.get("chunkDBOneThreadTransformToFileStep")
                 .<Order, TrackedOrder>chunk(10)
                 .reader(jdbcCursorReader)
-                .processor(new TrackedOrderItemProcessor())
+                .processor(compositeItemProcessor())
                 .writer(fileItemWriterForTrackedOrder)
                 .build();
     }
 
-//    @Bean
-//    public ItemProcessor<Order, TrackedOrder> trackedOrderTransformItemProcessor() {
-//        return new TrackedOrderItemProcessor();
-//    }
-
+    @Bean
+    public ItemProcessor<Order, TrackedOrder> compositeItemProcessor() {
+        return new CompositeItemProcessorBuilder<Order,TrackedOrder>()
+                .delegates(orderValidatingItemProcessor, new TrackedOrderItemProcessor())
+                .build();
+    }
 
     @Bean
     public Job jobDBOneThreadTransformToFile() {
@@ -61,13 +64,4 @@ public class FromJdbcCursorTransformToFileJob {
                 .build();
     }
 
-//    class TrackedOrderItemProcessor implements ItemProcessor<Order, TrackedOrder> {
-//        @Override
-//        public TrackedOrder process(Order order) throws Exception {
-//            TrackedOrder trackedOrder = new TrackedOrder(order);
-//            trackedOrder.setTrackingNumber(UUID.randomUUID().toString());
-//            trackedOrder.setFreeShipping(false);
-//            return trackedOrder;
-//        }
-//    }
 }

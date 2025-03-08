@@ -114,3 +114,14 @@ public ItemProcessor<Order, Order> orderValidatingItemProcessor() {
   return processor;
 }
 ```
+
+### chain of processors
+execute validation and transformation one by one
+```java
+    @Bean
+    public ItemProcessor<Order, TrackedOrder> compositeItemProcessor() {
+        return new CompositeItemProcessorBuilder<Order,TrackedOrder>()
+                .delegates(orderValidatingItemProcessor, new TrackedOrderItemProcessor())
+                .build();
+    }
+```

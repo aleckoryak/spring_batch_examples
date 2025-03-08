@@ -15,19 +15,32 @@ import java.sql.SQLException;
 
 @Component
 public class DbItemWriter {
+    private static final String INSERT_ORDER_SQL = "insert into "
+            + "SHIPPED_ORDER_OUTPUT(order_id, first_name, last_name, email, item_id, item_name, cost, ship_date)"
+            + " values(?,?,?,?,?,?,?,?)";
+
+    private static final String INSERT_ORDER_NAMED_SQL = "insert into "
+            + "SHIPPED_ORDER_OUTPUT(order_id, first_name, last_name, email, item_id, item_name, cost, ship_date)"
+            + " values(:orderId,:firstName,:lastName,:email,:itemId,:itemName,:cost,:shipDate)";
+
     @Autowired
     DataSource dataSource;
 
-    public static String INSERT_ORDER_SQL = "insert into "
-            + "SHIPPED_ORDER_OUTPUT(order_id, first_name, last_name, email, item_id, item_name, cost, ship_date)"
-            + " values(?,?,?,?,?,?,?,?)";
+    @Bean
+    public ItemWriter<Order> dbPreparedStatementItemWriterForOrder() {
+        return new JdbcBatchItemWriterBuilder<Order>()
+                .dataSource(dataSource)
+                .sql(INSERT_ORDER_SQL)
+                .itemPreparedStatementSetter(new OrderItemPrepearedStatmentSetter())
+                .build();
+    }
 
     @Bean
     public ItemWriter<Order> dbItemWriterForOrder() {
         return new JdbcBatchItemWriterBuilder<Order>()
                 .dataSource(dataSource)
-                .sql(INSERT_ORDER_SQL)
-                .itemPreparedStatementSetter(new OrderItemPrepearedStatmentSetter())
+                .sql(INSERT_ORDER_NAMED_SQL)
+                .beanMapped()
                 .build();
     }
 }

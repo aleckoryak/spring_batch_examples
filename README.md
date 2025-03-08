@@ -88,7 +88,7 @@ public Job deliverPackageJob() {
 ## Chunks
 + Step
     + ItemReader - one item at a time, chunk by chunk (OOTB: Kafka; FlatFile; HibernateCursor (one thread);  HibernatePaging(multi thread);  JdbcCursor; JdbcPaging; JpaPaging; Mongo; StaxEvent; Json
-    + ItemProcessor - (optional) one item by one in chunk, chunk by chunk
+    + ItemProcessor - (optional) one item by one in chunk, chunk by chunk (transform, filter, validate(JSR 380), chain)
     + ItemWriter - chunk by chunk (each chunk is transactional)
 
 
@@ -97,4 +97,20 @@ it is better to use it with named parameters same as the fields in pojo
 ```java 
 .sql("insert into TABLE(coulumnname1, coulumnname2)  values(:parameterName1,:parameterName2)")
 .beanMapped()
+```
+
+### BeanValidattion. 
+add maven dependencies
+```java
+Class Order{
+    @Pattern(regexp = ".*\\.gov")
+    private String email;
+}
+
+@Bean
+public ItemProcessor<Order, Order> orderValidatingItemProcessor() {
+  BeanValidatingItemProcessor<Order> processor = new BeanValidatingItemProcessor<>();
+  processor.setFilter(true);
+  return processor;
+}
 ```

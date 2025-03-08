@@ -5,24 +5,14 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.item.*;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.mapping.FieldSetMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.batch.item.file.transform.FieldSet;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindException;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 
 @Component
-public class FromFileToStringJob {
+public class FromFileToDBJob {
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
     @Autowired
@@ -31,20 +21,22 @@ public class FromFileToStringJob {
     ItemReader<Order> fileItemReaderForOrder;
     @Autowired
     ItemWriter<Order> stringItemWriter;
+    @Autowired
+    ItemWriter<Order> dbItemWriterForOrder;
 
     @Bean
-    public Step chunkFileToStringStep() {
-        return this.stepBuilderFactory.get("chunkFileToStringStep")
+    public Step chunkFileToDBStep() {
+        return this.stepBuilderFactory.get("chunkFileToDBStep")
                 .<Order, Order>chunk(10)
                 .reader(fileItemReaderForOrder)
-                .writer(stringItemWriter)
+                .writer(dbItemWriterForOrder)
                 .build();
     }
 
     @Bean
-    public Job jobFromFileToString() {
-        return this.jobBuilderFactory.get("jobFromFileToString")
-                .start(chunkFileToStringStep())
+    public Job jobFromFileToDB() {
+        return this.jobBuilderFactory.get("jobFromFileToDB")
+                .start(chunkFileToDBStep())
                 .build();
     }
 }

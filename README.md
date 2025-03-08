@@ -99,7 +99,7 @@ it is better to use it with named parameters same as the fields in pojo
 .beanMapped()
 ```
 
-### BeanValidattion. 
+### Bean Validation. 
 add maven dependencies
 ```java
 Class Order{
@@ -124,4 +124,16 @@ execute validation and transformation one by one
                 .delegates(orderValidatingItemProcessor, new TrackedOrderItemProcessor())
                 .build();
     }
+```
+### Filter itemProcessor
+if bean returns null this item will be skipped
+```java
+@Component
+public class FreeShippingItemProcessor implements ItemProcessor<TrackedOrder, TrackedOrder> {
+  @Override
+  public TrackedOrder process(TrackedOrder order) throws Exception {
+    order.setFreeShipping(order.getCost().compareTo(new BigDecimal("80")) == 1);
+    return order.isFreeShipping()?order:null;
+  }
+}
 ```

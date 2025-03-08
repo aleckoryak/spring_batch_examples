@@ -2,6 +2,7 @@ package com.linkedin.batch;
 
 import com.linkedin.batch.pojo.Order;
 import com.linkedin.batch.pojo.TrackedOrder;
+import com.linkedin.batch.transformer.FreeShippingItemProcessor;
 import com.linkedin.batch.transformer.TrackedOrderItemProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -53,7 +54,7 @@ public class FromJdbcCursorTransformToFileJob {
     @Bean
     public ItemProcessor<Order, TrackedOrder> compositeItemProcessor() {
         return new CompositeItemProcessorBuilder<Order,TrackedOrder>()
-                .delegates(orderValidatingItemProcessor, new TrackedOrderItemProcessor())
+                .delegates(orderValidatingItemProcessor, new TrackedOrderItemProcessor() , new FreeShippingItemProcessor())
                 .build();
     }
 

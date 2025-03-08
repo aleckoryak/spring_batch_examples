@@ -28,7 +28,7 @@ public class FromFileToStringJob {
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
     @Autowired
-    ItemReader<Order> fileItemReader;
+    ItemReader<Order> fileItemReaderForOrder;
     @Autowired
     ItemWriter<Order> stringItemWriter;
 
@@ -36,7 +36,7 @@ public class FromFileToStringJob {
     public Step chunkFileToStringStep() {
         return this.stepBuilderFactory.get("chunkFileToStringStep")
                 .<Order, Order>chunk(10)
-                .reader(fileItemReader)
+                .reader(fileItemReaderForOrder)
                 .writer(stringItemWriter)
                 .build();
     }

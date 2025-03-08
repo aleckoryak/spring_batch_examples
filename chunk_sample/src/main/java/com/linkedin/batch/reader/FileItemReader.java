@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 
 @Component
-public class FileItemReaderToOrder {
+public class FileItemReader {
     public static final String[] tokens = {"order_id", "first_name", "last_name", "email", "cost", "item_id", "item_name", "ship_date"};
 
 
     @Bean
-    public ItemReader<Order> fileItemReader() {
+    public ItemReader<Order> fileItemReaderForOrder() {
         //1 tokenizer
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setDelimiter(",");

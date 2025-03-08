@@ -9,15 +9,15 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
+import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
 @Component
 public class FromJdbcCursorToStringJob {
@@ -38,6 +38,9 @@ public class FromJdbcCursorToStringJob {
     @Autowired
     ItemWriter<Order> stringItemWriter;
 
+    @Autowired
+    ItemWriter<Order> fileItemWriterForOrder;
+
 
     @Bean
     public ItemReader<Order> jdbcCursorReader() {
@@ -54,9 +57,11 @@ public class FromJdbcCursorToStringJob {
         return this.stepBuilderFactory.get("chunkDBOneThreadToStringStep")
                 .<Order, Order>chunk(10)
                 .reader(jdbcCursorReader())
-                .writer(stringItemWriter)
+                .writer(fileItemWriterForOrder)
                 .build();
     }
+
+
 
     @Bean
     public Job jobDBOneThreadToString() {

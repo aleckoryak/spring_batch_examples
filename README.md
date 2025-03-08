@@ -92,15 +92,9 @@ public Job deliverPackageJob() {
     + ItemWriter - chunk by chunk (each chunk is transactional)
 
 
-04-03
-04_05   chunks from file
-04_05 - chunks from DB (single thread) jdbcCursorItemReader with .sql
-04_06 - chunks from DB (multi thread) jdbcPageItemReader with .queryProvider and .pageSize
-05_02 - FlatFileItemWriter
-05_03 - JdbcBatchItemWriter (prepared statment BAD)
-05_04 - JdbcBatchItemWriter named parameters GOOD (beanMapped)
-05_05 - JasonFileWriter
-
-
-06_02 processor - bean validator
-java -jar .\target\linkedin-batch-02-02-end-0.0.1-SNAPSHOT.jar "item=rrr" "run.date(date)=2025/03/12"
+### JdbcBatchItemWriter
+it is better to use it with named parameters same as the fields in pojo
+```java 
+.sql("insert into TABLE(coulumnname1, coulumnname2)  values(:parameterName1,:parameterName2)")
+.beanMapped()
+```

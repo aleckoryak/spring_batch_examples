@@ -39,6 +39,9 @@ public class FromJdbcPagingToStringJob {
     @Autowired
     public DataSource dataSource;
 
+    @Autowired
+    ItemWriter<Order> stringItemWriter;
+
 
     public JdbcPagingItemReader<Order> jdbcPagingItemReader() throws Exception {
         JdbcPagingItemReader<Order> itemReader = new JdbcPagingItemReader<>();
@@ -64,15 +67,7 @@ public class FromJdbcPagingToStringJob {
         return this.stepBuilderFactory.get("fromJdbcPagingToStringStep")
                 .<Order, Order>chunk(10)
                 .reader(jdbcPagingItemReader())
-                .writer(new ItemWriter<Order>() {
-
-                    @Override
-                    public void write(List<? extends Order> items) throws Exception {
-                        System.out.println(String.format("Received list of size: %s", items.size()));
-                        items.forEach(System.out::println);
-                    }
-
-                }).build();
+                .writer(stringItemWriter).build();
     }
 
     @Bean

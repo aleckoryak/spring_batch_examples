@@ -22,7 +22,6 @@ The following guides illustrate how to use some features concretely:
 + Flow
 + Steps
 
-
 ### Steps
 + Tasklet
 + Chunk
@@ -90,7 +89,7 @@ public Job deliverPackageJob() {
 + Step
     + ItemReader - one item at a time, chunk by chunk (OOTB: Kafka; FlatFile; HibernateCursor (one thread);  HibernatePaging(multi thread);  JdbcCursor; JdbcPaging; JpaPaging; Mongo; StaxEvent; Json
     + ItemProcessor - (optional) one item by one in chunk, chunk by chunk
-    + ItemWriter - chunk by chunk
+    + ItemWriter - chunk by chunk (each chunk is transactional)
 
 
 04-03

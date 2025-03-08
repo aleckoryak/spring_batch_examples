@@ -35,6 +35,9 @@ public class FromJdbcCursorToStringJob {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    ItemWriter<Order> stringItemWriter;
+
 
     @Bean
     public ItemReader<Order> jdbcCursorReader() {
@@ -51,14 +54,7 @@ public class FromJdbcCursorToStringJob {
         return this.stepBuilderFactory.get("chunkDBOneThreadToStringStep")
                 .<Order, Order>chunk(10)
                 .reader(jdbcCursorReader())
-                .writer(new ItemWriter<Order>() {
-                    @Override
-                    public void write(List<? extends Order> list) throws Exception {
-                        System.out.printf("Received list of size %d%n", list.size());
-                        list.forEach(System.out::println);
-
-                    }
-                })
+                .writer(stringItemWriter)
                 .build();
     }
 

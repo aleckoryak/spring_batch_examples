@@ -1,5 +1,6 @@
 package com.linkedin.batch;
 
+import com.linkedin.batch.pojo.Order;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -20,6 +21,9 @@ public class StringToStringJob {
 
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
+
+    @Autowired
+    ItemWriter<Order> stringItemWriter;
 
     List<String> list = Arrays.asList("s1","s2","s3","s4","s5","s6","s7","s8","s9","s10");
     Iterator<String> iterator = list.iterator();

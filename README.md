@@ -155,3 +155,29 @@ public class FreeShippingItemProcessor implements ItemProcessor<TrackedOrder, Tr
                 .retryLimit(3) //for each error case
                 .listener(new CustomRertyListener())
 ```
+
+### multi thread
+It works only with paging reader and batch writers
+in additional in reader we need to set
+readerBuilder.saveState(false))
+
+```java
+    @Bean
+TaskExecutor taskExecutor() {
+  ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+  executor.setCorePoolSize(5);
+  executor.setMaxPoolSize(10);
+  return executor;
+}
+
+@Bean
+public Step chunkFileToDBMultiThreadStep() {
+
+  return this.stepBuilderFactory.get("chunkFileToDBMultiThreadStep")
+          .<Order, Order>chunk(10)
+          .reader(fileItemReaderForOrder)
+          .writer(dbMultiThreadItemWriterForOrder)
+          .taskExecutor(taskExecutor())
+          .build();
+}
+```

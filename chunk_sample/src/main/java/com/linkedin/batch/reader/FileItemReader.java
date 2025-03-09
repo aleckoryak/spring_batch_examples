@@ -47,7 +47,6 @@ public class FileItemReader {
         reader.setLinesToSkip(1);
         reader.setResource(new FileSystemResource("./data/shipped_orders.csv"));
         reader.setLineMapper(lineMapper);
-
         return reader;
     }
 }

@@ -22,14 +22,14 @@ public class FromFileToDBJob {
     @Autowired
     ItemWriter<Order> stringItemWriter;
     @Autowired
-    ItemWriter<Order> dbItemWriterForOrder;
+    ItemWriter<Order> dbMultiThreadItemWriterForOrder;
 
     @Bean
     public Step chunkFileToDBStep() {
         return this.stepBuilderFactory.get("chunkFileToDBStep")
                 .<Order, Order>chunk(10)
                 .reader(fileItemReaderForOrder)
-                .writer(dbItemWriterForOrder)
+                .writer(dbMultiThreadItemWriterForOrder)
                 .build();
     }
 

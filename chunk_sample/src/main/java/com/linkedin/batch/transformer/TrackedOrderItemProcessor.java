@@ -13,6 +13,7 @@ public class TrackedOrderItemProcessor implements ItemProcessor<Order, TrackedOr
     @Override
     public TrackedOrder process(Order order) throws Exception {
         System.out.println("Processing order: " + order.getOrderId());
+        System.out.println("Processing with thread: " + Thread.currentThread().getName());
         TrackedOrder trackedOrder = new TrackedOrder(order);
         trackedOrder.setTrackingNumber(getTrackingNumber());
         return trackedOrder;

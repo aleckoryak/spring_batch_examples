@@ -36,7 +36,7 @@ public class DbItemWriter {
     }
 
     @Bean
-    public ItemWriter<Order> dbItemWriterForOrder() {
+    public ItemWriter<Order> dbMultiThreadItemWriterForOrder() {
         return new JdbcBatchItemWriterBuilder<Order>()
                 .dataSource(dataSource)
                 .sql(INSERT_ORDER_NAMED_SQL)

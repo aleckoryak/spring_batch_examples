@@ -181,3 +181,26 @@ public Step chunkFileToDBMultiThreadStep() {
           .build();
 }
 ```
+
+## Scheduler (quarz)
+1. annotation
+```java
+@EnableScheduling
+```
+2. add property to disable autostarting job
+```properties
+spring.batch.job.enabled=false
+```
+
+3. add scheduler every 30 seconds
+```java 
+@Autowired
+	public JobLauncher jobLauncher;
+
+	@Scheduled(cron = "0/30 * * * * *")
+	public void runJob() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception {
+		JobParametersBuilder paramBuilder = new JobParametersBuilder();
+		paramBuilder.addDate("runTime", new Date());
+		this.jobLauncher.run(job(), paramBuilder.toJobParameters());
+	}
+```

@@ -137,3 +137,12 @@ public class FreeShippingItemProcessor implements ItemProcessor<TrackedOrder, Tr
   }
 }
 ```
+
+### skips and error handling
+```java 
+                .processor(compositeItemProcessor())
+                .faultTolerant()
+                .skip(OrderProcessingException.class)
+                .skipLimit(10)
+                .listener(new CustomSkipListener())
+```

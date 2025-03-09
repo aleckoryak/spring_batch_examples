@@ -1,5 +1,7 @@
 package com.linkedin.batch;
 
+import com.linkedin.batch.exception.OrderProcessingException;
+import com.linkedin.batch.listener.CustomSkipListener;
 import com.linkedin.batch.pojo.Order;
 import com.linkedin.batch.pojo.TrackedOrder;
 import com.linkedin.batch.transformer.FreeShippingItemProcessor;
@@ -47,6 +49,10 @@ public class FromJdbcCursorTransformToFileJob {
                 .<Order, TrackedOrder>chunk(10)
                 .reader(jdbcCursorReader)
                 .processor(compositeItemProcessor())
+                .faultTolerant()
+                .skip(OrderProcessingException.class)
+                .skipLimit(10)
+                .listener(new CustomSkipListener())
                 .writer(fileItemWriterForTrackedOrder)
                 .build();
     }

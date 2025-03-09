@@ -13,18 +13,14 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.batch.item.support.builder.CompositeItemProcessorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.UUID;
-
 
 @Component
-public class FromJdbcCursorTransformToFileJob {
+public class FromJdbcCursorTransformSkipToFileJob {
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
 
@@ -44,8 +40,8 @@ public class FromJdbcCursorTransformToFileJob {
     public ItemProcessor<Order, Order> orderValidatingItemProcessor;
 
     @Bean
-    public Step chunkDBOneThreadTransformToFileStep() {
-        return this.stepBuilderFactory.get("chunkDBOneThreadTransformToFileStep")
+    public Step chunkDBOneThreadTransformSkipToFileStep() {
+        return this.stepBuilderFactory.get("chunkDBOneThreadTransformSkipToFileStep")
                 .<Order, TrackedOrder>chunk(10)
                 .reader(jdbcCursorReader)
                 .processor(compositeItemProcessor())
@@ -65,9 +61,9 @@ public class FromJdbcCursorTransformToFileJob {
     }
 
     @Bean
-    public Job jobDBOneThreadTransformToFile() {
-        return this.jobBuilderFactory.get("jobDBOneThreadTransformToFile")
-                .start(chunkDBOneThreadTransformToFileStep())
+    public Job jobDBOneThreadTransformSkipToFile() {
+        return this.jobBuilderFactory.get("jobDBOneThreadTransformSkipToFile")
+                .start(chunkDBOneThreadTransformSkipToFileStep())
                 .build();
     }
 

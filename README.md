@@ -146,3 +146,12 @@ public class FreeShippingItemProcessor implements ItemProcessor<TrackedOrder, Tr
                 .skipLimit(10)
                 .listener(new CustomSkipListener())
 ```
+
+### retries in case of specific exceptions
+```java
+                .processor(compositeItemProcessor1())
+                .faultTolerant()
+                .retry(OrderProcessingException.class)
+                .retryLimit(3) //for each error case
+                .listener(new CustomRertyListener())
+```
